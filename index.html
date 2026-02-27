@@ -305,31 +305,35 @@
   }
 
   /* ── SLIDE 6: КРЕДО ──────────────────────────────── */
-  #s6 { background: var(--bg); justify-content: center; align-items: center; }
-  #s6 .photo-half {
-    position: absolute; right: 0; top: 0;
-    width: 45%; height: 100%;
-  }
-  #s6 .photo-half img {
+  #s6 { background: var(--bg); }
+  #s6 .bg-video {
+    position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: center top;
-    filter: brightness(.7) saturate(.6);
+    object-position: center;
   }
-  #s6 .photo-half::after {
-    content: '';
+  #s6 .s6-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to right, var(--bg) 0%, rgba(12,12,14,.5) 100%);
+    background: linear-gradient(to right,
+      rgba(12,12,14,.88) 0%,
+      rgba(12,12,14,.72) 55%,
+      rgba(12,12,14,.35) 100%);
   }
-  #s6 .kredo-text {
-    font-size: clamp(36px, 5.5vw, 72px);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -.02em;
+  #s6 .content {
+    max-width: 640px;
+    justify-content: center;
   }
-  #s6 .kredo-text em {
+  #s6 .kredo-quote {
+    margin-top: 22px;
+    font-size: clamp(13px, 1.25vw, 15.5px);
+    color: var(--muted);
+    line-height: 1.8;
+    font-style: italic;
+    max-width: 580px;
+  }
+  #s6 .kredo-quote em {
     font-style: normal;
-    color: var(--gold);
+    color: rgba(242,240,235,0.7);
   }
 
   /* ── SLIDE 7: ВЫРОС ──────────────────────────────── */
@@ -489,21 +493,23 @@
 
   <!-- SLIDE 6 ─ Кредо -->
   <div class="slide" id="s6">
-    <div class="photo-half">
-      <img src="Степа/IMG_0443.jpeg" alt="">
-    </div>
-    <div class="content" style="max-width:660px;">
+    <video class="bg-video" src="Степа/IMG_0393.mp4" autoplay muted loop playsinline></video>
+    <div class="s6-overlay"></div>
+    <div class="content">
       <div class="rule"></div>
       <div class="eyebrow">Кредо</div>
-      <div class="kredo-text">
-        Жить<br>
-        <em>честно</em><br>
-        с собой.
-      </div>
-      <p class="sub" style="margin-top:28px;">
-        Это было его компасом всё время.<br>
-        Когда менял работу. Когда оставался.<br>
-        Когда принял решение уехать.
+      <h2>Секрет как стать<br>таким же красивым.</h2>
+      <p class="kredo-quote">
+        «Если вы хотите стать таким же красивым, как я, то вы должны быть тёрным,
+        иметь геном армян, иметь геном украинский, иметь геном российский.
+        Быть с репетиторами, общаться с хорошими людьми, иметь хорошую психику —
+        потому что она у вас <em>очень стабильна</em>, и вы знаете почему.<br><br>
+        Общаться с людьми, читать литературу, понимать, что мы никуда в этой жизни не добьёмся.
+        Понимать всю философию Ницше, читать Кафку, понимать всю систему Эйзенхауэра.
+        Так же понимать, как работает система. Сейчас скажу — квадрат, круг, сейчас скажу.
+        Я забыла слово, подожди, подожди, подожди.
+        Матрица Эйзенхауэра? Нет, нет, нет.
+        Круг, круг, который... <em>я забыла слово.</em>»
       </p>
     </div>
   </div>
