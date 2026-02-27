@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Степа · 2023–2026</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #0c0c0e;
+    --surface: #161618;
+    --gold:    #c8a96e;
+    --white:   #f2f0eb;
+    --muted:   rgba(242,240,235,0.45);
+    --faint:   rgba(242,240,235,0.18);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--white);
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SLIDES ─────────────────────────────────────── */
+  .deck {
+    position: relative;
+    width: 100vw; height: 100vh;
+  }
+  .slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .75s cubic-bezier(.4,0,.2,1),
+                visibility 0s linear .75s;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .75s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  .dots {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 999;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--faint);
+    cursor: pointer;
+    transition: background .3s, transform .3s;
+    border: none;
+  }
+  .dot.active { background: var(--gold); transform: scale(1.4); }
+
+  .counter {
+    position: fixed; top: 28px; right: 36px;
+    font-size: 11px; letter-spacing: .2em;
+    color: var(--faint); z-index: 999;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .arrow {
+    position: fixed; top: 50%; z-index: 999;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: var(--faint); font-size: 28px;
+    cursor: pointer; padding: 20px;
+    transition: color .25s;
+    user-select: none;
+  }
+  .arrow:hover { color: var(--white); }
+  .arrow.prev { left: 10px; }
+  .arrow.next { right: 10px; }
+
+  /* ── HELPERS ─────────────────────────────────────── */
+  .fill-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, rgba(12,12,14,.92) 44%, rgba(12,12,14,.55) 70%, rgba(12,12,14,.15) 100%);
+  }
+  .overlay-dark {
+    position: absolute; inset: 0;
+    background: rgba(12,12,14,.72);
+  }
+  .overlay-bottom {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(12,12,14,.95) 0%, rgba(12,12,14,.4) 50%, rgba(12,12,14,.1) 100%);
+  }
+  .overlay-center {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(12,12,14,.3) 0%, rgba(12,12,14,.85) 100%);
+  }
+
+  .content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 0 8vw;
+    max-width: 700px;
+    height: 100%;
+  }
+  .content.right {
+    margin-left: auto;
+  }
+  .content.center {
+    align-items: center;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 11px; letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  h1 {
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -.02em;
+  }
+  h2 {
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .sub {
+    margin-top: 24px;
+    font-size: clamp(15px, 1.6vw, 19px);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 520px;
+    font-weight: 400;
+  }
+  .rule {
+    width: 40px; height: 2px;
+    background: var(--gold);
+    margin-bottom: 24px;
+    flex-shrink: 0;
+  }
+  .quote {
+    font-size: clamp(22px, 3.5vw, 42px);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    font-style: italic;
+  }
+  .quote-attr {
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  /* ── VIDEO ───────────────────────────────────────── */
+  .bg-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* ── SLIDE 1: TITLE ──────────────────────────────── */
+  #s1 { background: var(--bg); }
+  #s1 .photo-half {
+    position: absolute; right: 0; top: 0;
+    width: 52%; height: 100%;
+  }
+  #s1 .photo-half img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  #s1 .photo-half::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, transparent 40%);
+  }
+  #s1 h1 span { color: var(--gold); }
+  #s1 .year {
+    margin-top: 32px;
+    font-size: 13px; letter-spacing: .3em;
+    color: var(--muted); font-weight: 400;
+  }
+
+  /* ── SLIDE 2: ОТКУДА ─────────────────────────────── */
+  #s2 { background: var(--bg); }
+  #s2 .photo-half {
+    position: absolute; left: 0; top: 0;
+    width: 50%; height: 100%;
+  }
+  #s2 .photo-half img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: grayscale(30%);
+  }
+  #s2 .photo-half::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to left, var(--bg) 0%, transparent 50%);
+  }
+  #s2 .content { margin-left: auto; padding-right: 9vw; }
+
+  /* ── SLIDE 3: КВАРТИРА ───────────────────────────── */
+  #s3 { background: var(--bg); align-items: flex-end; }
+  #s3 img.fill-photo { object-position: center; }
+  #s3 .content {
+    padding-bottom: 10vh;
+    justify-content: flex-end;
+    max-width: 780px;
+    padding-left: 9vw;
+  }
+
+  /* ── SLIDE 4: ТРИ ГОДА ───────────────────────────── */
+  #s4 { background: var(--bg); flex-direction: column; align-items: stretch; }
+  .grid-3 {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+  }
+  .grid-3 > div {
+    overflow: hidden;
+    position: relative;
+  }
+  .grid-3 img, .grid-3 video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+  }
+  .grid-3 > div:hover img, .grid-3 > div:hover video {
+    transform: scale(1.03);
+  }
+  #s4 .overlay-dark { background: rgba(12,12,14,.55); }
+  #s4 .title-center {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+
+  /* ── SLIDE 5: ПРОБОВАЛ ВСЁ ───────────────────────── */
+  #s5 { background: var(--surface); }
+  #s5 .left-col {
+    width: 46%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+  #s5 .left-col > div { overflow: hidden; position: relative; }
+  #s5 .left-col img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%);
+  }
+  #s5 .left-col > div::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(12,12,14,.3);
+  }
+  #s5 .right-col {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 0 7vw 0 6vw;
+  }
+  .job-list {
+    margin-top: 28px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+  .job-item {
+    display: flex; align-items: baseline; gap: 14px;
+    font-size: clamp(14px, 1.5vw, 17px);
+    color: var(--muted);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--faint);
+  }
+  .job-item:last-child { border-bottom: none; }
+  .job-num {
+    font-size: 11px; letter-spacing: .2em;
+    color: var(--gold); font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* ── SLIDE 6: КРЕДО ──────────────────────────────── */
+  #s6 { background: var(--bg); justify-content: center; align-items: center; }
+  #s6 .photo-half {
+    position: absolute; right: 0; top: 0;
+    width: 45%; height: 100%;
+  }
+  #s6 .photo-half img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: brightness(.7) saturate(.6);
+  }
+  #s6 .photo-half::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, rgba(12,12,14,.5) 100%);
+  }
+  #s6 .kredo-text {
+    font-size: clamp(36px, 5.5vw, 72px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  #s6 .kredo-text em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  /* ── SLIDE 7: ВЫРОС ──────────────────────────────── */
+  #s7 { background: var(--bg); }
+  #s7 img.fill-photo { filter: grayscale(15%); object-position: center top; }
+  #s7 .content { justify-content: flex-end; padding-bottom: 12vh; }
+
+  /* ── SLIDE 8: НИЖНЯЯ МАСЛОВКА ────────────────────── */
+  #s8 { background: var(--bg); }
+  #s8 .duo {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  #s8 .duo > div { overflow: hidden; position: relative; }
+  #s8 .duo img, #s8 .duo video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  #s8 .overlay-dark { background: rgba(12,12,14,.6); }
+  #s8 .title-center {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+
+  /* ── SLIDE 9: ДОМОЙ ──────────────────────────────── */
+  #s9 { background: var(--bg); }
+  #s9 img.fill-photo { filter: grayscale(40%) brightness(.85); }
+
+  /* ── SLIDE 10: ФИНАЛ ─────────────────────────────── */
+  #s10 { background: var(--bg); }
+  #s10 img.fill-photo { object-position: center; filter: brightness(.6) saturate(.7); }
+  #s10 .content.center {
+    padding: 0 10vw;
+  }
+  #s10 h2 { font-size: clamp(32px, 5vw, 68px); }
+  #s10 .final-sub {
+    margin-top: 18px;
+    font-size: clamp(14px, 1.5vw, 18px);
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  #s10 .sig {
+    margin-top: 48px;
+    font-size: 12px;
+    letter-spacing: .25em;
+    color: var(--faint);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- COUNTER -->
+<div class="counter" id="counter">01 / 10</div>
+
+<!-- ARROWS -->
+<button class="arrow prev" onclick="go(-1)">&#8592;</button>
+<button class="arrow next" onclick="go(+1)">&#8594;</button>
+
+<!-- DOTS -->
+<nav class="dots" id="dots"></nav>
+
+<!-- ════════════════════════════════════════════════ -->
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1 ─ Ты айтишник? -->
+  <div class="slide active" id="s1">
+    <div class="photo-half">
+      <img src="Степа/IMG_0090.jpeg" alt="">
+    </div>
+    <div class="content">
+      <div class="eyebrow">Москва · Осень 2023</div>
+      <h1>— Ты<br>айтишник?<span>.</span></h1>
+      <p class="sub">
+        Степа подошёл к незнакомцу в кофейне.<br>
+        Так всё началось.
+      </p>
+      <div class="year">СТЕПАН ХАЧАТРЯН · 2023–2026</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 ─ Откуда -->
+  <div class="slide" id="s2">
+    <div class="photo-half">
+      <img src="Степа/IMG_0249.jpeg" alt="">
+    </div>
+    <div class="content">
+      <div class="rule"></div>
+      <div class="eyebrow">Красноярск → Москва</div>
+      <h2>Приехал<br>искать.</h2>
+      <p class="sub">
+        Из Красноярска в Москву — не потому что там плохо.
+        Потому что надо было проверить.<br><br>
+        Первая зима. Метель. Ноутбук в руках.
+        Всё впереди.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 ─ Квартира -->
+  <div class="slide" id="s3">
+    <img class="fill-photo" src="Степа/IMG_7182.jpeg" alt="">
+    <div class="overlay-bottom"></div>
+    <div class="content" style="justify-content:flex-end; padding-bottom:10vh; max-width:900px; padding-left:9vw;">
+      <div class="eyebrow">Нижняя Масловка</div>
+      <p class="quote">
+        «Сначала — нет, идея плохая.<br>
+        Потом приехал, посмотрел.<br>
+        А квартира офигенная оказывается.»
+      </p>
+      <div class="quote-attr">— И заехал</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 ─ Три года -->
+  <div class="slide" id="s4">
+    <div class="grid-3">
+      <div><img src="Степа/IMG_0892.jpeg" alt=""></div>
+      <div><video src="Степа/IMG_0829.mov" autoplay muted loop playsinline></video></div>
+      <div><img src="Степа/IMG_0186.jpeg" alt=""></div>
+      <div><img src="Степа/IMG_7210.jpeg" alt=""></div>
+      <div><video src="Степа/IMG_0830.mov" autoplay muted loop playsinline></video></div>
+      <div><img src="Степа/IMG_1016.jpeg" alt=""></div>
+    </div>
+    <div class="overlay-dark"></div>
+    <div class="title-center">
+      <div class="eyebrow">2023 — 2026</div>
+      <h2 style="font-size: clamp(52px, 7vw, 96px);">Три года.</h2>
+      <p style="margin-top:16px; font-size: clamp(15px,1.6vw,20px); color: var(--muted);">Москва. Нижняя Масловка. Этот человек.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 ─ Пробовал всё -->
+  <div class="slide" id="s5">
+    <div class="left-col">
+      <div><img src="Степа/IMG_0442.jpeg" alt=""></div>
+      <div><img src="Степа/IMG_0134.jpeg" alt=""></div>
+    </div>
+    <div class="right-col">
+      <div class="eyebrow">Поиск</div>
+      <h2>Пробовал<br>всё.</h2>
+      <div class="job-list">
+        <div class="job-item"><span class="job-num">01</span> IT Project Manager</div>
+        <div class="job-item"><span class="job-num">02</span> Риелтор</div>
+        <div class="job-item"><span class="job-num">03</span> Менеджер Перекрёстка</div>
+        <div class="job-item"><span class="job-num">04</span> Реклама в фармацевтике</div>
+        <div class="job-item"><span class="job-num">05</span> Event-менеджер</div>
+        <div class="job-item"><span class="job-num">06</span> Продюсер спектакля</div>
+      </div>
+      <p class="sub" style="margin-top:24px;">Не провалы. Честные попытки.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 ─ Кредо -->
+  <div class="slide" id="s6">
+    <div class="photo-half">
+      <img src="Степа/IMG_0443.jpeg" alt="">
+    </div>
+    <div class="content" style="max-width:660px;">
+      <div class="rule"></div>
+      <div class="eyebrow">Кредо</div>
+      <div class="kredo-text">
+        Жить<br>
+        <em>честно</em><br>
+        с собой.
+      </div>
+      <p class="sub" style="margin-top:28px;">
+        Это было его компасом всё время.<br>
+        Когда менял работу. Когда оставался.<br>
+        Когда принял решение уехать.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 ─ Вырос -->
+  <div class="slide" id="s7">
+    <img class="fill-photo" src="Степа/IMG_0891.jpeg" alt="">
+    <div class="overlay"></div>
+    <div class="content" style="justify-content:flex-end; padding-bottom:12vh;">
+      <div class="eyebrow">За три года</div>
+      <h2>Повзрослел.<br>Успокоился.</h2>
+      <p class="sub" style="max-width:480px;">
+        Что-то осело. Не сломалось —
+        именно осело, как должно.
+        Стало понятнее кто он.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 ─ Нижняя Масловка -->
+  <div class="slide" id="s8">
+    <div class="duo">
+      <div><img src="Степа/IMG_7181.jpeg" alt=""></div>
+      <div><img src="Степа/IMG_7204.jpeg" alt=""></div>
+    </div>
+    <div class="overlay-dark"></div>
+    <div class="title-center">
+      <div class="eyebrow">Нижняя Масловка · Кухня · Будни</div>
+      <h2 style="font-size: clamp(38px,5.5vw,72px);">Это было<br>домом.</h2>
+      <p style="margin-top:18px; font-size:clamp(14px,1.5vw,18px); color:var(--muted); max-width:500px; line-height:1.7;">
+        Разговоры до часа ночи.<br>
+        Кухня. Лампочки которые кто-то должен был вкрутить.<br>
+        Три года, из которых вышел другим.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 ─ Домой -->
+  <div class="slide" id="s9">
+    <img class="fill-photo" src="Степа/IMG_0252.jpeg" alt="">
+    <div class="overlay-center"></div>
+    <div class="overlay-bottom"></div>
+    <div class="content center" style="justify-content:flex-end; padding-bottom:12vh; align-items:center;">
+      <div class="eyebrow">Красноярск</div>
+      <h2 style="text-align:center;">Уезжает домой.</h2>
+      <p class="sub" style="text-align:center; margin:18px auto 0;">
+        Не потому что не вышло.<br>
+        Потому что понял — ответ был там,<br>
+        откуда он уехал.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 ─ Финал -->
+  <div class="slide" id="s10">
+    <img class="fill-photo" src="Степа/IMG_1016.jpeg" alt="">
+    <div class="overlay-dark" style="background:rgba(12,12,14,.7);"></div>
+    <div class="content center" style="height:100%; justify-content:center; align-items:center; max-width:800px; margin:0 auto; padding:0 8vw; text-align:center; position:relative; z-index:2; width:100%;">
+      <div class="rule" style="margin:0 auto 24px;"></div>
+      <h2>Я рад,<br>что ты был рядом.</h2>
+      <p class="final-sub">
+        Спасибо что подошёл тогда в кофейне.<br>
+        За три года. За кредо. За то что остался собой.
+      </p>
+      <div class="sig">Нижняя Масловка · 2023–2026</div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counterEl = document.getElementById('counter');
+  let cur = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' active' : '');
+    b.onclick = () => goTo(i);
+    dotsEl.appendChild(b);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    counterEl.textContent =
+      String(cur + 1).padStart(2, '0') + ' / ' +
+      String(slides.length).padStart(2, '0');
+    // play videos on active slide
+    slides[cur].querySelectorAll('video').forEach(v => v.play().catch(() => {}));
+  }
+
+  function go(d) { goTo(cur + d); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ')  go(+1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                     go(-1);
+  });
+
+  // Touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) go(dx > 0 ? +1 : -1);
+  });
+</script>
+</body>
+</html>
